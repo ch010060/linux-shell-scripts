@@ -1,0 +1,4 @@
+#!/bin/bash
+
+foldername=$(basename $(dirname "$1"));
+echo $foldername

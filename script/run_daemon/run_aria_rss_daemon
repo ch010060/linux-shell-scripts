@@ -1,0 +1,7 @@
+#!/bin/bash
+
+#SET PATH
+RSS_PATH=~/downloads/tool/
+LOG_PATH=~/downloads/log/rss/
+
+nohup ${RSS_PATH}waifud_linux_amd64 -c ${RSS_PATH}config.toml >> ${LOG_PATH}aria_rss_$(gettimestamp).log 2>&1 &

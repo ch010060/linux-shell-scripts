@@ -1,0 +1,4 @@
+#!/bin/bash
+
+purefilename=$(basename "$1");
+echo $purefilename

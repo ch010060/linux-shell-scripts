@@ -1,0 +1,15 @@
+#!/bin/bash
+
+#PATH
+ARIA2_WATCH_PATH=~/downloads/aria/
+
+#Variable
+FILE_TYPE=txt
+CHECK_NEW_LIST=$(ls $ARIA2_WATCH_PATH/*.$FILE_TYPE 2> /dev/null)
+
+if [ "$CHECK_NEW_LIST" == "" ];
+then
+	echo "Empty!"
+else
+	echo "Found..."
+fi

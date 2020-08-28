@@ -1,0 +1,3 @@
+#!/bin/bash
+
+aria2c -x 16 -s 16 -j 10 "$1"

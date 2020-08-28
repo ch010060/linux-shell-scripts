@@ -1,0 +1,16 @@
+#!/bin/bash
+
+ARIA2_WATCH_PATH=~/downloads/watch/aria2/
+REMOTE_PATH=gd:/seedhost/completed/share/_torrent/
+
+cd $ARIA2_WATCH_PATH
+
+while true; do
+	rclone move $REMOTE_PATH $ARIA2_WATCH_PATH --transfers 8
+	
+	for file in $(ls *.torrent); do 
+		aria2c -T $file && rm $file &
+	done
+	
+	sleep 60
+done

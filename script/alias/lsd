@@ -1,0 +1,3 @@
+#!/bin/bash
+
+ls -l $1 | grep ^d | awk '{print $9}'

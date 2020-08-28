@@ -1,0 +1,34 @@
+#!/bin/bash
+
+###SET PATH
+ARIA2_PATH=~/downloads/aria/
+COMPLETED_PATH=~/downloads/share/
+
+###SET LOCAL VARIABLE
+#FILE_TYPE=mp4
+FILE_TYPE_REGEX='.*\(M2TS\|rmvb\|wmv\|mov\|flv\|webm\|mp4\|MP4\|avi\|AVI\|mkv\|MKV\)$'
+EXCLUDE_TYPE=.aria2
+
+###Start to watch
+while true; do
+#CHECK_NEW_LIST=$(find $ARIA2_PATH -type f -iname *.$FILE_TYPE | grep -v $EXCLUDE_TYPE 2> /dev/null)
+CHECK_NEW_LIST=$(find $ARIA2_PATH -type f -regex $FILE_TYPE_REGEX | grep -v $EXCLUDE_TYPE 2> /dev/null)
+    if [ ! "$CHECK_NEW_LIST" == "" ];
+    then
+	#echo "Found!"
+		### Scan filetype to compare
+		for filename in "$(find $ARIA2_PATH -type f -regex $FILE_TYPE_REGEX | grep -v $EXCLUDE_TYPE 2> /dev/null)";
+		do
+			#echo "$filename"
+			if [ ! -f "${filename}${EXCLUDE_TYPE}" ]
+			then
+				#echo "Found completed file...";
+				foldername=$(basename $(dirname $filename));
+				if [ ! -d "${COMPLETED_PATH}${foldername}" ]; then mkdir ${COMPLETED_PATH}${foldername}; fi
+				mv ${filename} ${COMPLETED_PATH}${foldername} ;
+			fi
+		done
+    fi
+	find ${ARIA2_PATH}* -type d -empty -delete
+    sleep 15
+done

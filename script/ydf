@@ -1,0 +1,52 @@
+#!/bin/bash
+
+###SET PATH
+YD_PATH=~/downloads/youtubedl/
+YD_LOG_PATH=~/downloads/log/youtubedl/
+COMPLETED_PATH=~/downloads/completed/
+
+###SET LOCAL VARIABLE
+FILE_TYPE=txt
+
+###SET youtube-dl CONFIG
+
+###SET ARIA2 CONFIG
+## -j
+max_concurrent_downloads=10
+## -s
+split=8
+## -x
+max_connection_per_server=$(( 8*$split*$max_concurrent_downloads ))
+##-k
+min_split_size=1M
+##--console-log-level
+CONSOLE_LOG_LEVEL=info
+
+###Start to watch
+while true; do
+
+#get timestamp
+timestamp=$(date '+%Y-%m-%d_%H-%M-%S')
+
+#Replace space with underscore in filename
+find . -maxdepth 1 -name "* *" -type f | rename 's/ /_/g'
+
+CHECK_NEW_LIST=$(ls ${YD_PATH}*.$FILE_TYPE 2> /dev/null)
+    if [ ! "$CHECK_NEW_LIST" == "" ];
+    then
+	#echo "Found!"
+	### Scan files.txt
+	for filename in $(ls -l $YD_PATH*.txt | awk '{print $9}' | sort -r);
+	do
+		foldername=$(echo $filename | sed -e "s/.txt//g")'_'$timestamp
+		mkdir $foldername
+		cd $foldername
+		youtube-dl --cookies ${YD_PATH}cookies --no-warnings --external-downloader aria2c --external-downloader-args "-c --load-cookies ${YD_PATH}cookies --console-log-level $CONSOLE_LOG_LEVEL -x $max_connection_per_server -s $split -j $max_concurrent_downloads -k $min_split_size" -o "%(title)s.%(ext)s" -a $filename >> "${YD_LOG_PATH}yd_$timestamp.log" 2>&1
+		cd $YD_PATH
+		rm $filename
+		mv $foldername $COMPLETED_PATH
+	done
+    fi
+	find ${YD_PATH}* -type d -empty -delete
+    sleep 60
+done

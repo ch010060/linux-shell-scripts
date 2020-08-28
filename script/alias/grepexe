@@ -1,0 +1,3 @@
+#!/bin/bash
+
+grep -P '^(.*\.(exe|iso|msi)).*$' | sort

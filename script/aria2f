@@ -1,0 +1,53 @@
+#!/bin/bash
+
+###SET PATH
+ARIA2_PATH=~/downloads/aria/
+ARIA2_LOG_PATH=~/downloads/log/aria/
+COMPLETED_PATH=~/downloads/completed/
+
+###SET LOCAL VARIABLE
+FILE_TYPE=txt
+
+###SET ARIA2 CONFIG
+## -j
+max_concurrent_downloads=10
+## -s
+split=8
+## -x
+max_connection_per_server=$(( 8*$split*$max_concurrent_downloads ))
+##--console-log-level
+##--log-level
+##	debug, info, notice, warn or error
+CONSOLE_LOG_LEVEL=info
+LOG_LEVEL=info
+##--summary-interval
+SUMMARY_INTERVAL=10
+
+
+###Start to watch
+while true; do
+
+#get timestamp
+timestamp=$(date '+%Y-%m-%d_%H-%M-%S')
+
+#Replace space with underscore in filename
+find . -maxdepth 1 -name "* *" -type f | rename 's/ /_/g'
+
+CHECK_NEW_LIST=$(ls ${ARIA2_PATH}*.$FILE_TYPE 2> /dev/null)
+    if [ ! "$CHECK_NEW_LIST" == "" ];
+    then
+	#echo "Found!"
+	### Scan files.txt
+	for filename in $(ls -l $ARIA2_PATH*.txt | awk '{print $9}' | sort -r);
+	do
+		foldername=$(echo $filename | sed -e "s/.txt//g")'_'$timestamp
+		mkdir $foldername
+        #aria2 --log-level $LOG_LEVEL --console-log-level $CONSOLE_LOG_LEVEL --summary-interval $SUMMARY_INTERVAL -s $split -x $max_connection_per_server -j $max_concurrent_downloads -i $filename -d $foldername -l "${ARIA2_LOG_PATH}aria2_$(date '+%Y%m%d%H%M%S').log"  &&
+		aria2c --log-level $LOG_LEVEL --console-log-level $CONSOLE_LOG_LEVEL --summary-interval $SUMMARY_INTERVAL -s $split -x $max_connection_per_server -j $max_concurrent_downloads -i $filename -d $foldername >> "${ARIA2_LOG_PATH}aria2_$timestamp.log" 2>&1
+		rm $filename
+		mv $foldername $COMPLETED_PATH
+	done
+    fi
+	find ${ARIA2_PATH}* -type d -empty -delete
+    sleep 60
+done

@@ -1,0 +1,12 @@
+#!/bin/bash
+
+while true; do
+
+#get timestamp
+timestamp=$(date '+%Y-%m-%d')
+
+		if [ ! -f "~/downloads/log/rclone/rclone_$timestamp'_'info.log" ]; then touch ~/downloads/log/rclone/rclone_$timestamp'_'info.log; fi
+        rclone move ~/downloads/completed gd:/seedhost/completed/ --progress --delete-after --drive-chunk-size 128M --buffer-size 256M --transfers 8 --log-level INFO --log-file ~/downloads/log/rclone/rclone_$timestamp'_'info.log >> ~/downloads/log/rclone/rclone_$timestamp'_'progress.log
+        find ~/downloads/completed/* -type d -empty -delete
+        sleep 60
+done

@@ -1,0 +1,4 @@
+#!/bin/bash
+
+nohup ~/downloads/script/ydf > /dev/null 2>&1 &
+#nohup ~/downloads/script/yd_move > /dev/null 2>&1 &

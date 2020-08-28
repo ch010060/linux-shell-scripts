@@ -1,0 +1,36 @@
+#!/bin/bash
+
+ARIA2_CONF_PATH="/home34/ch010060/downloads/tool/aria2.conf"
+ARIA2_LOG_PATH="/home34/ch010060/downloads/log/aria/trackerlist.log"
+APPEND_TRACKERLIST="http://tracker.moe-li.com:2333/announce,http://sukebei.tracker.wf:8888/announce,http://anidex.moe:6969/announce,http://104.238.198.186:8000/announce,http://104.28.1.30:8080/announce,http://104.28.16.69/announce,udp://104.238.198.186:8000/announce,http://nyaa.tracker.wf:7777/announce,http://104.238.198.186:8000/announce,http://t.nyaatracker.com/announce,http://opentracker.acgnx.se/announce,https://opentracker.acgnx.se/announce,http://opentracker.acgnx.com:6869/announce,http://tracker.xfsub.com:6868/announce,http://tracker.dm258.cn:7070/announce,http://opentracker.acgnx.se/announce,https://opentracker.acgnx.se/announce,http://opentracker.acgnx.com:6869/announce,http://t.acg.rip:6699/announce,http://share.camoe.cn:8080/announce,udp://tr.bangumi.moe:6969/announce,https://tr.bangumi.moe:9696/announce,http://tr.bangumi.moe:6969/announce,http://tracker.xfsub.com:6868/announce,http://tracker.dm258.cn:7070/announce,udp://tracker.doko.moe:6969"
+
+if [ ! -f "$ARIA2_LOG_PATH" ];
+then
+	touch $ARIA2_LOG_PATH
+fi
+
+while true; do
+
+#get timestamp
+timestamp=$(date '+%Y-%m-%d')
+
+	list=`wget -qO- https://raw.githubusercontent.com/ngosang/trackerslist/master/trackers_all.txt|awk NF|sed ":a;N;s/\n/,/g;ta"`
+	if [ -z "`grep "bt-tracker" $ARIA2_CONF_PATH`" ]; then
+		sed -i '$a bt-tracker='${list},${APPEND_TRACKERLIST} $ARIA2_CONF_PATH
+		echo "${timestamp} add tracker list" >> ${ARIA2_LOG_PATH}
+	else
+		sed -i "s@bt-tracker.*@bt-tracker=$list,$APPEND_TRACKERLIST@g" $ARIA2_CONF_PATH
+		echo "${timestamp} update tracker list" >> ${ARIA2_LOG_PATH}
+	fi
+	
+	#kill aria2
+	pid=`ps aux | grep aria2c | grep -v grep | cut -d  ' ' -f 2`
+	kill $pid
+	
+	#run aria2c rpc daemon
+	nohup ~/downloads/tool/aria2c --conf-path ~/downloads/tool/aria2.conf > ~/downloads/log/aria/aria_rpc_$(gettimestamp).log 2>&1 &
+	
+	#update per day
+	sleep 86400
+	
+done

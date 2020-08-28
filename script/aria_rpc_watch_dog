@@ -1,0 +1,13 @@
+#!/bin/bash
+
+#SET PATH
+ARIA2_LOG_PATH=~/downloads/log/aria/
+
+while true; do
+	#run aria2c rpc daemon
+	if [ -z "$(ps aux | grep aria2.conf | grep -v grep)" ]
+	then
+		~/downloads/tool/aria2c --conf-path ~/downloads/tool/aria2.conf > ${ARIA2_LOG_PATH}aria_rpc_$(gettimestamp).log 2>&1 &
+	fi
+        sleep 60
+done

@@ -1,0 +1,11 @@
+#!/bin/bash
+
+#SET PATH
+ARIA2_LOG_PATH=~/downloads/log/aria/
+
+#run aria2c rpc daemon
+nohup ~/downloads/tool/aria2c --conf-path ~/downloads/tool/aria2.conf > ${ARIA2_LOG_PATH}aria_rpc_$(gettimestamp).log 2>&1 &
+#run to detect aria watch folder
+nohup ~/downloads/script/aria2f > /dev/null 2>&1 &
+#run to dynamically move completed files under aria watch folder 
+nohup ~/downloads/script/aria2_move > /dev/null 2>&1 &

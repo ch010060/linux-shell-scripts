@@ -1,0 +1,8 @@
+#!/bin/bash
+set -x
+
+cd ~/downloads/process
+mv ~/downloads/aria/*.rar .
+unrar x -y '*.rar'
+rm *.rar
+mv * ~/downloads/completed

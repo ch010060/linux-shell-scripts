@@ -1,0 +1,3 @@
+#!/bin/bash
+
+youtube-dl --restrict-filenames --external-downloader aria2c --external-downloader-args "-c -x 8 -s 8 -j 10 -k 1M" "$1" -o '%(title)s.%(ext)s'

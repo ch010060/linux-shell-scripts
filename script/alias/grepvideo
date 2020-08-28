@@ -1,0 +1,6 @@
+#!/bin/bash
+
+#SET FILE_TYPE
+FILE_TYPE_REGEX='.*\(M2TS\|rmvb\|wmv\|mov\|flv\|webm\|mp4\|MP4\|avi\|AVI\|mkv\|MKV\)$'
+
+grep -i $FILE_TYPE_REGEX

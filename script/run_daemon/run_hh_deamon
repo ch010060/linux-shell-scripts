@@ -1,0 +1,3 @@
+#!/bin/bash
+
+nohup java -jar ~/downloads/hath/HentaiAtHome.jar >>  ~/downloads/hath/HentaiAtHome.log 2>&1 &

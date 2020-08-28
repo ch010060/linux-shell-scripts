@@ -1,0 +1,4 @@
+#!/bin/bash
+
+#run update trackerlist daemon
+nohup ~/downloads/script/update_trackerlist > /dev/null 2>&1 &
