@@ -1,0 +1,22 @@
+#!/bin/bash
+
+#SET PATH
+ARIA2_LOG_PATH=~/downloads/log/aria/
+RSS_PATH=~/downloads/tool/
+LOG_PATH=~/downloads/log/rss/
+
+#run aria2c rpc daemon
+nohup ~/downloads/tool/aria2c --conf-path ~/downloads/tool/aria2.conf > ${ARIA2_LOG_PATH}aria_rpc_$(gettimestamp).log 2>&1 &
+
+#run aria2c rpc watchdog
+nohup ~/downloads/script/aria_rpc_watch_dog > /dev/null 2>&1 &
+
+#run aria2c rss daemon
+nohup ${RSS_PATH}waifud_linux_amd64 -c ${RSS_PATH}config.toml >> ${LOG_PATH}aria_rss_$(gettimestamp).log 2>&1 &
+
+#run update trackerlist daemon for aria2c rpc
+nohup ~/downloads/script/update_trackerlist > /dev/null 2>&1 &
+
+#run rclone move daemon
+nohup ~/downloads/script/rclone_move > /dev/null 2>&1 &
+nohup ~/downloads/script/rclone_move_share > /dev/null 2>&1 &
