@@ -1,0 +1,10 @@
+[service.database]
+saved-path = "waifud.gob"
+min-ttl = 600
+
+[service.telebot]
+token = [TELEBOT_TOKEN]
+
+[service.aria2c]
+url = [ARIA2C_RPC_URL]
+secret = [ARIA2C_PASSWORD]
