@@ -1,0 +1,3 @@
+[submodule "web/webui-aria2"]
+	path = web/webui-aria2
+	url = https://github.com/ziahamza/webui-aria2.git
