@@ -1,0 +1,6 @@
+#!/bin/bash
+
+tag="img"
+ext="jpg"
+
+find . -name '${tag}*.${ext}' -type f -exec bash -c 'mv "$1" "${1/\/img//}"' -- {} \;

@@ -1,0 +1,12 @@
+#!/bin/bash
+
+ext="jpg"
+
+CD=`pwd`
+for d in */ ; do
+	cd "$d"
+	for a in *.${ext}; do
+		mv $a `printf %04d.%s ${a%.*} ${a##*.}`
+	done
+	cd "$CD"
+done
