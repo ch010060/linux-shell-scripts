@@ -1,0 +1,16 @@
+#!/bin/bash
+
+# Set path
+ARIA2_LOG_PATH=~/downloads/log/aria/
+COOKIE_FILE="cookies.txt"
+
+for x in $(ls *.txt | grep -v cookies.txt);
+do (
+	foldername="${x%%.*}"
+	mkdir "${foldername}"
+	aria2c --load-cookies $COOKIE_FILE -x 16 -s 16 -j 10 -i "${x}" -d "${foldername}" -l "${ARIA2_LOG_PATH}aria2_$(date '+%Y%m%d%H%M%S').log"
+	mv "${x}" "${foldername}"
+)
+done
+
+rm $COOKIE_FILE
