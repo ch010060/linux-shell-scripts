@@ -1,0 +1,109 @@
+#!/bin/bash
+
+# Set path
+CURR=`pwd`
+COVER_FOLDER="${CURR}/cover"
+PROCESS_FOLDER="${CURR}/process"
+DELETE_FOLDER="${CURR}/delete"
+RAW_FOLDER="${CURR}/raw"
+BAK_FOLDER="${CURR}/backup"
+UPLOAD_PATH=<YOUR_PATH>
+
+# Set var
+PASSWORD="$1"
+filename="${PWD}/filelist.txt"
+
+# Mkdir
+[ -d $PROCESS_FOLDER ] || mkdir $PROCESS_FOLDER
+[ -d $DELETE_FOLDER ] || mkdir $DELETE_FOLDER
+[ -d $RAW_FOLDER ] || mkdir $RAW_FOLDER
+[ -d $BAK_FOLDER ] || mkdir $BAK_FOLDER
+
+# Replace space with underscore in all filenames
+find -name "* *" -type d | rename 's/ /_/g'    # do the directories first
+find -name "* *" -type f | rename 's/ /_/g'
+
+# Create file list
+[ -f "$filename" ] && rm $filename;
+#ls $COVER_FOLDER | sed -e 's/\.jpg$\|\.png$//g' > $filename
+for x in $(ls $COVER_FOLDER);
+do (
+	substring1="top"
+	substring2=".part"
+	echo "${x}" | cut -d '.' -f 1 | sed "s@"${substring1}"@@g" | sed "s@"${substring2}"@@g" >> $filename
+)
+done
+
+# Read file by line
+n=1
+while read line; do
+	# echo "$line"
+	# Move files matching the name pattern
+	find . -maxdepth 1 -name "*$line*" -exec mv -t $PROCESS_FOLDER {} +
+	n=$((n+1))
+done < $filename
+
+# Delete temp file
+rm $filename
+
+# Move rest of files to delete
+mv *.7z* ${DELETE_FOLDER}
+
+# CD to process folder
+cd process
+
+# Scan compressed files uder current root folder and extract with 7z
+for x in $(ls | grep -i '.7z$\|.7z.001$\|.rar$\|.part1.rar$\|.zip$\|.z01$' | grep -v '.part[2-9].rar');
+do (
+	foldername=`echo "${x}" | cut -d '.' -f 1`
+        7z x -y -p"${PASSWORD}" -o"${foldername}"  "${x}"
+)
+done
+
+# Delete/Move compressed files uder current root folder to raw folder(backup)
+for x in $(ls *.7z*);
+do (
+	#rm "${x}"
+	mv "${x}" ${RAW_FOLDER};
+)
+done
+
+# Replace space with underscore in all filenames
+find -name "* *" -type d | rename 's/ /_/g'    # do the directories first
+find -name "* *" -type f | rename 's/ /_/g'
+
+# Replace extension from "exe" to "rar"
+find -name "*.exe" -type f | rename 's/.exe/.rar/g'
+
+# Scan recursively compressed files uder folder(depth > 1)
+for x in $(find . -type f | grep -i '.7z$\|.7z.001$\|.rar$\|.part1.rar$\|.zip$\|.z01$' | grep -v '.part[2-9].rar');
+do (
+	unar -d -f -p "${PASSWORD}" "${x}"
+)
+done
+
+# Delete/Move compressed files uder current root folder to raw folder(backup)
+for x in $(find . -type f | grep -i '.7z\|.rar$\|.zip\|.z0*$');
+do (
+        #rm "${x}"
+        mv "${x}" ${BAK_FOLDER};
+)
+done
+
+# Remove prefix in folder name
+for x in $(ls);
+do (
+	fix_foldername="${x#*)_}"
+	mv $x $fix_foldername
+)
+done
+
+# CD to main folder
+cd ../
+
+# Rename process folder
+BASENAME=`basename $CURR`
+mv process $BASENAME
+
+# Upload
+rclone move "${BASENAME}" "${UPLOAD_PATH}" --progress --delete-after --drive-chunk-size 128M --buffer-size 256M --transfers 8 --log-level INFO
