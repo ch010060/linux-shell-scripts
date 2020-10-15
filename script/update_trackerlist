@@ -1,7 +1,7 @@
 #!/bin/bash
 
-ARIA2_CONF_PATH="/home34/ch010060/downloads/tool/aria2.conf"
-ARIA2_LOG_PATH="/home34/ch010060/downloads/log/aria/trackerlist.log"
+ARIA2_CONF_PATH="~/downloads/tool/aria2.conf"
+ARIA2_LOG_PATH="~/downloads/log/aria/trackerlist.log"
 APPEND_TRACKERLIST="http://tracker.moe-li.com:2333/announce,http://sukebei.tracker.wf:8888/announce,http://anidex.moe:6969/announce,http://104.238.198.186:8000/announce,http://104.28.1.30:8080/announce,http://104.28.16.69/announce,udp://104.238.198.186:8000/announce,http://nyaa.tracker.wf:7777/announce,http://104.238.198.186:8000/announce,http://t.nyaatracker.com/announce,http://opentracker.acgnx.se/announce,https://opentracker.acgnx.se/announce,http://opentracker.acgnx.com:6869/announce,http://tracker.xfsub.com:6868/announce,http://tracker.dm258.cn:7070/announce,http://opentracker.acgnx.se/announce,https://opentracker.acgnx.se/announce,http://opentracker.acgnx.com:6869/announce,http://t.acg.rip:6699/announce,http://share.camoe.cn:8080/announce,udp://tr.bangumi.moe:6969/announce,https://tr.bangumi.moe:9696/announce,http://tr.bangumi.moe:6969/announce,http://tracker.xfsub.com:6868/announce,http://tracker.dm258.cn:7070/announce,udp://tracker.doko.moe:6969"
 
 if [ ! -f "$ARIA2_LOG_PATH" ];

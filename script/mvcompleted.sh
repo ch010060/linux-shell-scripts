@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
  
 # $1 is gid.
 # $2 is the number of files.
