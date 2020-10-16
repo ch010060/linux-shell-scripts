@@ -28,3 +28,6 @@ map <C-h> :tabp<CR>
  map <C-Left> <Esc>:tabprev<CR>
  map <C-Right> <Esc>:tabnext<CR>
  map <C-n> <Esc>:tabnew<CR>
+ 
+" Shortcut
+nnoremap <silent> <F5> :NERDTree<CR>
