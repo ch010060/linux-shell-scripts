@@ -24,7 +24,7 @@ timestamp=$(date '+%Y-%m-%d')
 	fi
 	
 	#kill aria2
-	pid=`ps aux | grep aria2c | grep -v grep | cut -d  ' ' -f 2`
+	pid=`ps aux | grep aria2c | grep -v grep | awk '{print $2}'`
 	kill $pid
 	
 	#run aria2c rpc daemon
